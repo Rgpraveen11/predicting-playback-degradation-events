@@ -1,0 +1,11 @@
+Column_Name,Description
+Session_ID,Unique alphanumeric identifier for the user's active streaming session.
+Mobile_Carrier_Network,"The specific ISP and generation of the network (Alpha_5G, Alpha_4G, Beta_5G, Beta_4G, Gamma_4G). 5G has much higher theoretical bandwidth but is highly sensitive to line-of-sight and building penetration."
+Signal_Strength_dBm,The radio signal strength indicator measured in decibel-milliwatts (ranging from roughly -50 dBm for excellent to -120 dBm for a dead zone).
+Cell_Tower_Congestion_Ratio,A metric (0.0 to 1.5+) representing the active load on the user's local cell tower versus its maximum backhaul capacity. A ratio > 1.0 means packets are actively being queued or dropped.
+Concurrent_Regional_Viewers_k,The number of simultaneous users (in thousands) pulling the live stream from the exact same regional CDN edge server. Massive spikes here cause CDN cache misses and latency.
+CDN_Edge_Latency_ms,The round-trip ping time (in milliseconds) from the user's device to the nearest video server.
+Requested_Bitrate_Mbps,"The video quality level the player's Adaptive Bitrate (ABR) algorithm is attempting to pull (e.g., 2.5 for 720p, 8.0 for 1080p60fps, 15.0 for 4K)."
+Available_Bandwidth_Mbps,The actual network throughput the device is achieving at that specific second.
+Device_CPU_Load_Pct,"The processing load on the user's smartphone. Sometimes, decoding high-framerate 4K video overloads the phone's hardware, causing stuttering that looks like a network issue but is actually a device bottleneck."
+Playback_Degradation_Event,"(Target Variable): 1 if the user experienced a fatal QoE drop in this interval (e.g., a re-buffering stall lasting > 500ms, or a forced resolution drop below 720p); 0 if playback remained smooth."

@@ -1,0 +1,9 @@
+streamlit>=1.36
+pandas>=2.0
+scikit-learn>=1.4
+matplotlib>=3.7
+numpy>=1.24
+shap>=0.42
+fastapi
+uvicorn
+joblib
