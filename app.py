@@ -5,6 +5,11 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
+from groq import Groq
+
+load_dotenv()
 
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
@@ -547,6 +552,9 @@ with prediction_tab:
 
             prediction = int(probability >= 0.5)
 
+            st.session_state["playback_probability"] = probability
+            st.session_state["playback_prediction"] = prediction
+
             st.metric(
                 "Estimated degradation probability",
                 f"{probability * 100:.1f}%",
@@ -567,6 +575,48 @@ with prediction_tab:
                 "The 50% threshold is a default, not a guarantee. "
                 "Tune it using validation data for the intended use."
             )
+            st.subheader("🤖 GenAI Explanation")
+
+    if st.button("Generate AI Explanation"):
+        api_key = os.getenv("GROQ_API_KEY")
+
+        if not api_key:
+            st.error("Groq API key not found. Check your .env file.")
+        else:
+            try:
+                client = Groq(api_key=api_key)
+
+                probability_for_ai = st.session_state.get("playback_probability")
+                prediction_for_ai = st.session_state.get("playback_prediction")
+
+                if probability_for_ai is None:
+                    st.warning("Please click 'Predict degradation risk' first.")
+                else:
+                    prompt = f"""
+                    Explain this media playback prediction in simple English.
+
+                    Risk level: {"Higher" if prediction_for_ai == 1 else "Lower"}
+                    Estimated degradation probability: {probability_for_ai:.1%}
+
+                    Explain this probability, possible contributing factors,
+                    and practical ways to improve playback quality.
+                    Do not claim correlation proves causation.
+                    """
+
+                    with st.spinner("Generating AI explanation..."):
+                        response = client.chat.completions.create(
+                            model="openai/gpt-oss-120b",
+                            messages=[
+                                {"role": "user", "content": prompt}
+                            ],
+                            temperature=0.3,
+                            max_tokens=500,
+                        )
+
+                    st.markdown(response.choices[0].message.content)
+                    
+            except Exception as e:
+                st.error(f"GenAI request failed: {e}")
 
 # ==================================================
 # TAB 4: DATASET EXPLORER
